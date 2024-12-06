@@ -109,14 +109,28 @@ const deleteUserById = async (req, res) => {
     }
 };
 
-// Actualizar un usuario por ID
+// Actualizar un usuario por ID (solo el usuario autenticado puede actualizar sus datos)
 const updateUserById = async (req, res) => {
     try {
-        const user = await User.findByIdAndUpdate(req.params.id, req.body, { new: true });
-        if (!user) {
+        const { token } = req.headers;  // Obtener el token del encabezado
+        if (!token) {
+            return res.status(401).json({ message: 'No autorizado, se requiere token' });
+        }
+
+        // Verificar el token JWT
+        const decoded = jwt.verify(token, SECRET_KEY);
+        const userId = decoded.id;
+
+        // Verificar si el usuario intenta actualizar sus propios datos
+        if (req.params.id !== userId) {
+            return res.status(403).json({ message: 'No puede actualizar los datos de otro usuario' });
+        }
+
+        const updatedUser = await User.findByIdAndUpdate(req.params.id, req.body, { new: true });
+        if (!updatedUser) {
             return res.status(404).json({ message: 'Usuario no encontrado' });
         }
-        res.status(200).json(user);
+        res.status(200).json(updatedUser);
     } catch (error) {
         res.status(500).json({ message: error.message });
     }
