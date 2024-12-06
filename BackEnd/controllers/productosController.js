@@ -1,4 +1,4 @@
-const Producto = require('../models/productosModels.js'); // Asegúrate de tener el modelo de producto
+const Producto = require('../models/productosModels.js');
 const mongoose = require('mongoose');
 
 // Crear un nuevo producto
@@ -37,14 +37,14 @@ const obtenerProductos = async (req, res) => {
     }
 };
 
-// Obtener productos filtrados por categoría
+// Obtener productos filtrados por ID de categoría
 const obtenerProductosPorCategoria = async (req, res) => {
     try {
-        const categoria = req.params.categoria;
-        const productos = await Producto.find({ categoria });
+        const categoriaId = req.params.categoriaId; // Recibe un ID de categoría
+        const productos = await Producto.find({ categoria: categoriaId });
 
         if (productos.length === 0) {
-            return res.status(404).json({ message: `No se encontraron productos en la categoría ${categoria}` });
+            return res.status(404).json({ message: `No se encontraron productos en la categoría con ID ${categoriaId}` });
         }
 
         res.status(200).json(productos);
@@ -84,7 +84,6 @@ const eliminarProductoPorId = async (req, res) => {
     }
 };
 
-
 const actualizarProductoPorId = async (req, res) => {
     try {
         // Verifica que el ID sea válido
@@ -118,13 +117,11 @@ const actualizarProductoPorId = async (req, res) => {
     }
 };
 
-
-
 module.exports = { 
     crearProducto, 
     obtenerProductos, 
     obtenerProductoPorId, 
     eliminarProductoPorId, 
     actualizarProductoPorId,
-    obtenerProductosPorCategoria  // Nueva función para obtener productos filtrados por categoría
+    obtenerProductosPorCategoria  // Función actualizada para usar ID de categoría
 };

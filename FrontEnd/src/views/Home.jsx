@@ -67,6 +67,9 @@ const Home = () => {
 
       <hr />
 
+
+      <a href="/add-product" className="btn-link">Agregar Producto</a>
+
       <h4>Filtrar por Categoría</h4>
       <select value={categoriaSeleccionada} onChange={handleCategoriaChange}>
         <option value="">Seleccionar</option>
@@ -76,6 +79,9 @@ const Home = () => {
           </option>
         ))}
       </select>
+
+      
+
 
       <div style={{ display: 'flex', flexWrap: 'wrap', gap: '20px' }}>
         {/* Renderizado de productos */}

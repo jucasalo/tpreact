@@ -18,7 +18,7 @@ const Login = () => {
             console.log('Enviando Formulario');
             console.log(formData);
 
-            const endPoint = 'http://127.0.0.1:3000/api/users/login';
+            const endPoint = 'http://127.0.0.1:3000/api/users/user';
             const config = {
                 headers: {
                     'Content-Type': 'application/json'
