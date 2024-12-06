@@ -4,7 +4,8 @@ import { useNavigate } from "react-router-dom";
 
 const Registro = () =>{
     // Defino los estados
-    const [ formData, setFormData  ] = useState({ name: '', email: '', password: ''});
+    const [formData, setFormData] = useState({ nombre: '', email: '', password: '' });
+
 
     const navigate = useNavigate();
 
@@ -56,8 +57,8 @@ const Registro = () =>{
             <h2> Registro</h2>
             <form onSubmit={ handleSubmit }  className="card p-4">
                 <label htmlFor="">Nombre</label>
-                <input className="" type="text" name="name" onChange={handleChange} value={formData.nombre} />
-
+                <input type="text" name="nombre" onChange={handleChange} value={formData.nombre} />
+                
                 <label htmlFor="">Email</label>
                 <input type="email" name="email" onChange={handleChange} value={ formData.email}/>
 

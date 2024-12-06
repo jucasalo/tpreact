@@ -26,7 +26,7 @@ const userSchema = new mongoose.Schema({
     timestamps: true,
 });
 
-// Middleware para encriptar la contraseña antes de guardar el usuario
+
 userSchema.pre('save', async function (next) {
     if (!this.isModified('password')) {
         return next();
@@ -39,6 +39,7 @@ userSchema.pre('save', async function (next) {
         next(error);
     }
 });
+
 
 // Método para comparar contraseñas
 userSchema.methods.comparePassword = async function (candidatePassword) {
