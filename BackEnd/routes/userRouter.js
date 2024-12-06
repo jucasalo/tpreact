@@ -2,13 +2,13 @@ const express = require('express');
 const router = express.Router();
 
 // Importo las funciones del controlador
-const { 
-    createUser, 
-    getUsers, 
-    getUsersById, 
-    deleteUserById, 
-    updateUserById, 
-    login 
+const {
+    createUser,
+    getUsers,
+    getUsersById,
+    deleteUserById,
+    updateUserById,
+    login
 } = require('../controllers/userController');
 
 // Ruta para obtener todos los usuarios
@@ -27,6 +27,6 @@ router.get('/:id', getUsersById);
 router.delete('/:id', deleteUserById);
 
 // Ruta para actualizar un usuario por ID
-router.put('/:id', updateUserById);
+router.put('/actualizar/:id', updateUserById);
 
 module.exports = router;

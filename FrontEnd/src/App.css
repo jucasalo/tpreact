@@ -75,6 +75,17 @@ body {
   border-radius: 8px;
 }
 
+/* Estilo para los enlaces de Detalle dentro de la tarjeta */
+.card a {
+  color: white; /* Cambia el color del texto a blanco */
+  text-decoration: none; /* Eliminar el subrayado del enlace */
+}
+
+.card a:hover {
+  color: #ddd; /* Cambiar el color al pasar el cursor (gris claro) */
+}
+
+
 /* Buttons */
 .btn {
   width: 200px;
