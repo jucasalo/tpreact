@@ -7,7 +7,8 @@ import Details from './views/Details';
 import Login from './views/Login';
 import Registro from './views/Registro';
 import NotFound from './views/NotFound';
-import Perfil from './views/Peril';
+import Perfil from './views/Peril';  // Corregido el nombre de la importación
+import ProductosList from "./components/ProductList";  // Corregido el nombre de la importación
 import AddProduct from './views/AddProduct';  // Importamos la vista de agregar producto
 import { Routes, Route, NavLink } from 'react-router-dom';
 import { PrivateRoute } from './utils/PrivateRoute';
@@ -15,7 +16,6 @@ import { PrivateRoute } from './utils/PrivateRoute';
 import { AuthProvider } from './utils/AuthContext';
 
 function App() {
-
   return (
     <div>
       <h1> Recuperatorio Tp2</h1>
@@ -44,18 +44,18 @@ function App() {
 
       <AuthProvider>
         <Routes>
-          <Route path='/' element={ <Home /> } /> 
-          <Route  path='/perfil' 
-                  element={  <PrivateRoute>
-                                <Perfil /> 
-                              </PrivateRoute> } 
-          />
-          <Route path='/contact' element={ <Contact/>} />
-          <Route path='/details/:id' element={ <Details/>} />
-          <Route path='/registro' element={ <Registro />} />
-          <Route path='/login' element={ <Login />} />
-          <Route path='/add-product' element={ <AddProduct />} />  {/* Ruta para el formulario */}
-          <Route path='*' element={ <NotFound />} />
+          <Route path='/' element={<Home />} />
+          <Route path='/perfil' element={
+            <PrivateRoute>
+              <Perfil /> 
+            </PrivateRoute>
+          } />
+          <Route path='/contact' element={<Contact />} />
+          <Route path='/details/:id' element={<Details />} />
+          <Route path='/registro' element={<Registro />} />
+          <Route path='/login' element={<Login />} />
+          <Route path='/add-product' element={<AddProduct />} />  {/* Ruta para el formulario */}
+          <Route path='*' element={<NotFound />} />
         </Routes>
       </AuthProvider>
     </div>

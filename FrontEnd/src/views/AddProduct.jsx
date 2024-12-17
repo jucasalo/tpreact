@@ -97,14 +97,18 @@ const AddProduct = () => {
           value={formData.imagen}
           onChange={handleChange}
         />
-        <label htmlFor="categoria">Categoría</label>
-        <input
-          type="text"
-          id="categoria"
-          name="categoria"
-          value={formData.categoria}
-          onChange={handleChange}
-        />
+        {/* Select de Categorías */}
+        <div>
+          <label htmlFor="categoria">Categoría</label>
+          <select name="categoria" id="categoria" value={formData.categoria} onChange={handleChange}>
+            <option value="">Selecciona una categoría</option>
+            {['collares', 'anillos', 'aros'].map((categoria, index) => (
+              <option key={index} value={categoria}>
+                {categoria.charAt(0).toUpperCase() + categoria.slice(1)}
+              </option>
+            ))}
+          </select>
+        </div>
         <button type="submit" className="m-2">
           Agregar Producto
         </button>

@@ -1,102 +1,183 @@
-import ProductsContainer from "../components/ProductsContainer";
+import React, { useState, useEffect } from 'react';
 import Card from '../components/Card';
-import Button from '../components/Button';
-
-import { useState, useEffect } from 'react';
-import { NavLink } from "react-router-dom";
+import { AuthContext } from '../utils/AuthContext';
 
 const Home = () => {
-  let nombre = 'usuario';
-  let [productos, setProductos] = useState([]);
-  const [categorias, setCategorias] = useState([]);
-  const [categoriaSeleccionada, setCategoriaSeleccionada] = useState('');
+    const { usuarioLogueado } = React.useContext(AuthContext); // Obtén el estado de autenticación del contexto
+    const [productos, setProductos] = useState([]); // Estado para almacenar los productos
+    const [categorias, setCategorias] = useState([]); // Estado para almacenar las categorías
+    const [errorMensaje, setErrorMensaje] = useState(''); // Estado para manejar errores
+    const [categoriaSeleccionada, setCategoriaSeleccionada] = useState(''); // Estado para manejar la categoría seleccionada
+    const [cargandoDestinos, setCargandoDestinos] = useState(false); // Estado para indicar si se están cargando los productos
+    const nombre = 'usuario'; // Nombre de usuario (puedes ajustar esto dinámicamente si lo necesitas)
 
-  useEffect(() => {
-    console.log('Se Renerizo el componente.');
+    useEffect(() => {
+        console.log('Se renderizó el componente.');
 
-    // Obtener categorías desde el backend
-    const getCategorias = async () => {
-      try {
-        const resp = await fetch('http://localhost:3000/api/categories'); // Asegúrate que esta sea la URL correcta para obtener categorías
-        const data = await resp.json();
-        console.log(data);
-        setCategorias(data); // Asegúrate de que el backend esté devolviendo categorías
-      } catch (error) {
-        console.error('Error al obtener categorías:', error);
-      }
-    };
+        // Función para obtener productos desde el backend
+        const getProducts = async () => {
+            try {
+                const url = 'http://localhost:3000/api/products'; // URL para obtener productos
+                const resp = await fetch(url); // Realiza la solicitud al backend
+                const data = await resp.json(); // Parsear la respuesta como JSON
 
-    // Obtener productos desde el backend
-    const getProducts = async (categoria = '') => {
-      try {
-        let url = 'http://localhost:3000/api/products';
-        if (categoria) {
-          url = `http://localhost:3000/api/products/category/${categoria}`;
+                // Mapeo de productos para ajustarlos al formato esperado
+                const products = data.map((product) => ({
+                    id: product._id,
+                    nombre: product.nombre,
+                    foto: product.imagen, // Cambié 'foto' a 'imagen'
+                    precio: product.precio,
+                    categoria: product.categoria,
+                }));
+
+                setProductos(products); // Actualiza el estado con los productos obtenidos
+            } catch (error) {
+                console.error('Error al obtener productos:', error); // Manejo de errores
+            }
+        };
+
+        // Función para obtener las categorías
+        const getCategorias = async () => {
+            try {
+                const url = 'http://localhost:3000/api/categorias'; // URL para obtener las categorías
+                const resp = await fetch(url); // Realiza la solicitud al backend
+                const data = await resp.json(); // Parsear la respuesta como JSON
+
+                setCategorias(data); // Actualiza el estado con las categorías obtenidas
+            } catch (error) {
+                console.error('Error al obtener las categorías:', error); // Manejo de errores
+            }
+        };
+
+        getProducts(); // Llama a la función para obtener productos
+        getCategorias(); // Llama a la función para obtener categorías
+    }, []); // Dependencia vacía para ejecutarlo solo al montar el componente
+
+    // Función para manejar el cambio en el filtro por categoría
+    const handleCategoriaChange = async (e) => {
+        setCategoriaSeleccionada(e.target.value);
+        setCargandoDestinos(true);
+        if (e.target.value) {
+            const url = `http://localhost:3000/api/categorias/categoria/${e.target.value}`;
+            try {
+                const resp = await fetch(url);
+                const data = await resp.json();
+
+                // Mapeo de productos filtrados por categoría
+                const productosFiltrados = data.map((product) => ({
+                    id: product._id,
+                    nombre: product.nombre,
+                    foto: product.imagen, // Cambié 'foto' a 'imagen'
+                    precio: product.precio,
+                    categoria: product.categoria,
+                }));
+
+                setProductos(productosFiltrados);
+                setCargandoDestinos(false);
+            } catch (error) {
+                setErrorMensaje('Error al obtener productos por categoría.');
+                console.error('Error al obtener productos por categoría:', error);
+                setCargandoDestinos(false);
+            }
+        } else {
+            getProducts(); // Si no se selecciona ninguna categoría, recargar todos los productos
+            setCargandoDestinos(false);
         }
-
-        const resp = await fetch(url); 
-        const data = await resp.json();
-        const products = data.map(product => {
-          return {
-            id: product._id, 
-            nombre: product.nombre,
-            foto: product.imagen, // Cambié a 'imagen'
-            precio: product.precio
-          };
-        });
-        console.log(products);
-        setProductos(products);
-      } catch (error) {
-        console.error('Error al obtener productos:', error);
-      }
     };
 
-    getProducts();  // Llamada inicial para obtener todos los productos
-    getCategorias();  // Llamada inicial para obtener las categorías
-  }, []); // Dependencias vacías para ejecutarlo solo al montar el componente
+    return (
+        <div>
+            <h2>Inicio</h2>
+            <h4>
+                Bienvenido, <span className="verde">Hola {nombre}</span>
+            </h4>
 
-  const handleCategoriaChange = (e) => {
-    setCategoriaSeleccionada(e.target.value);
-    getProducts(e.target.value); // Obtener productos filtrados por la categoría seleccionada
-  };
+            <hr />
 
-  return (
-    <>
-      <h2>Inicio</h2>
-      <h4>Bienvenido <p className="verde">Hola {nombre}</p></h4>
+            <a href="/add-product" className="btn-link">
+                Agregar Producto
+            </a>
 
-      <hr />
-
-
-      <a href="/add-product" className="btn-link">Agregar Producto</a>
-
-      <h4>Filtrar por Categoría</h4>
-      <select value={categoriaSeleccionada} onChange={handleCategoriaChange}>
-        <option value="">Seleccionar</option>
-        {categorias.map((categoria) => (
-          <option key={categoria.id} value={categoria.nombre}>
-            {categoria.nombre}
-          </option>
+          {/* Select de Categorías */}
+    <div>
+    <label htmlFor="categoria">Filtrar por Categoría:</label>
+    <select name="categoria" id="categoria" value={categoriaSeleccionada} onChange={handleCategoriaChange}>
+        <option value="">Selecciona una categoría</option>
+        {['collares', 'anillos', 'aros'].map((categoria, index) => (
+            <option key={index} value={categoria}>
+                {categoria.charAt(0).toUpperCase() + categoria.slice(1)}
+            </option>
         ))}
-      </select>
+    </select>
+    </div>
 
-      
 
+            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '20px' }}>
+                {/* Renderizado de productos */}
+                {errorMensaje ? (
+                    <p className="error-message">{errorMensaje}</p>
+                ) : cargandoDestinos ? (
+                    <p className="loading-indicator">Cargando...</p>
+                ) : (
+                    <>
+                        {(categoriaSeleccionada === '' || categoriaSeleccionada === 'collares') && productos.length > 0 && (
+                            <section className="section">
+                                <h3 className="section-title">Collares</h3>
+                                <div className="cont_card">
+                                    {productos.filter(p => p.categoria === 'collares').map((producto) => (
+                                        <Card
+                                            key={producto.id}
+                                            id={producto.id}
+                                            texto={producto.nombre}
+                                            precio={producto.precio}
+                                            foto={producto.foto}
+                                            usuarioLogueado={usuarioLogueado} // Paso el estado de autenticación a las tarjetas de producto
+                                        />
+                                    ))}
+                                </div>
+                            </section>
+                        )}
 
-      <div style={{ display: 'flex', flexWrap: 'wrap', gap: '20px' }}>
-        {/* Renderizado de productos */}
-        {productos.map((producto) => (
-          <Card
-            key={producto.id}
-            id={producto.id}
-            texto={producto.nombre}
-            precio={producto.precio}
-            foto={producto.foto}
-          />
-        ))}
-      </div>
-    </>
-  );
+                        {(categoriaSeleccionada === '' || categoriaSeleccionada === 'anillos') && productos.length > 0 && (
+                            <section className="section">
+                                <h3 className="section-title">Anillos</h3>
+                                <div className="cont_card">
+                                    {productos.filter(p => p.categoria === 'anillos').map((producto) => (
+                                        <Card
+                                            key={producto.id}
+                                            id={producto.id}
+                                            texto={producto.nombre}
+                                            precio={producto.precio}
+                                            foto={producto.foto}
+                                            usuarioLogueado={usuarioLogueado} // Paso el estado de autenticación a las tarjetas de producto
+                                        />
+                                    ))}
+                                </div>
+                            </section>
+                        )}
+
+                        {(categoriaSeleccionada === '' || categoriaSeleccionada === 'aros') && productos.length > 0 && (
+                            <section className="section">
+                                <h3 className="section-title">Aros</h3>
+                                <div className="cont_card">
+                                    {productos.filter(p => p.categoria === 'aros').map((producto) => (
+                                        <Card
+                                            key={producto.id}
+                                            id={producto.id}
+                                            texto={producto.nombre}
+                                            precio={producto.precio}
+                                            foto={producto.foto}
+                                            usuarioLogueado={usuarioLogueado} // Paso el estado de autenticación a las tarjetas de producto
+                                        />
+                                    ))}
+                                </div>
+                            </section>
+                        )}
+                    </>
+                )}
+            </div>
+        </div>
+    );
 };
 
 export default Home;
