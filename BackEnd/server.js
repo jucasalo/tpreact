@@ -4,10 +4,11 @@ const categoriesRouter = require('./routes/categoriesRouter'); // Importar las r
 const app = express();
 
 // Conectar a la base de datos de MongoDB
-mongoose.connect('mongodb://localhost:27017/tuBaseDeDatos', {
+mongoose.connect('mongodb://localhost:27017/tp2', {
   useNewUrlParser: true,
   useUnifiedTopology: true,
 })
+
 .then(() => console.log('Conectado a la base de datos'))
 .catch((err) => console.log('Error de conexión:', err));
 

@@ -37,20 +37,26 @@ const obtenerProductos = async (req, res) => {
     }
 };
 
-// Obtener productos filtrados por ID de categoría
+
 const obtenerProductosPorCategoria = async (req, res) => {
     try {
-        const categoriaId = req.params.categoriaId; // Recibe un ID de categoría
-        const productos = await Producto.find({ categoria: categoriaId });
+        const categoria = req.params.categoria; // Recibe un nombre de categoría
+        const productos = await Producto.find({ categoria: categoria });
 
         if (productos.length === 0) {
-            return res.status(404).json({ message: `No se encontraron productos en la categoría con ID ${categoriaId}` });
+            return res.status(404).json({ message: `No se encontraron productos en la categoría ${categoria}` });
         }
 
         res.status(200).json(productos);
     } catch (error) {
-        res.status(500).json({ message: error.message });
+        // Loguear el error para depuración adicional si es necesario
+        console.error("Error al obtener productos por categoría:", error.message);
+        res.status(500).json({ message: "Ocurrió un error al intentar recuperar los productos. Por favor, intenta más tarde." });
     }
+};
+
+module.exports = {
+    obtenerProductosPorCategoria
 };
 
 // Obtener un producto por ID
@@ -66,9 +72,13 @@ const obtenerProductoPorId = async (req, res) => {
     }
 };
 
-// Eliminar un producto por ID
 const eliminarProductoPorId = async (req, res) => {
     try {
+        // Verificar si el usuario está logueado
+        if (!req.body.userId) {
+            return res.status(403).json({ message: 'Acceso denegado' });
+        }
+
         // Verificar si el ID es válido
         if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
             return res.status(400).json({ message: 'ID de producto inválido' });
@@ -84,6 +94,7 @@ const eliminarProductoPorId = async (req, res) => {
     }
 };
 
+// Actualizar un producto por ID
 const actualizarProductoPorId = async (req, res) => {
     try {
         // Verifica que el ID sea válido
@@ -123,5 +134,5 @@ module.exports = {
     obtenerProductoPorId, 
     eliminarProductoPorId, 
     actualizarProductoPorId,
-    obtenerProductosPorCategoria  // Función actualizada para usar ID de categoría
+    obtenerProductosPorCategoria 
 };
