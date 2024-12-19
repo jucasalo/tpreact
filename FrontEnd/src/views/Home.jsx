@@ -39,7 +39,7 @@ const Home = () => {
         // Función para obtener las categorías
         const getCategorias = async () => {
             try {
-                const url = 'http://localhost:3000/api/categorias'; // URL para obtener las categorías
+                const url = 'http://localhost:3000/api/products/categorias'; // URL para obtener las categorías
                 const resp = await fetch(url); // Realiza la solicitud al backend
                 const data = await resp.json(); // Parsear la respuesta como JSON
 
@@ -55,35 +55,48 @@ const Home = () => {
 
     // Función para manejar el cambio en el filtro por categoría
     const handleCategoriaChange = async (e) => {
-        setCategoriaSeleccionada(e.target.value);
-        setCargandoDestinos(true);
-        if (e.target.value) {
-            const url = `http://localhost:3000/api/categorias/categoria/${e.target.value}`;
+        const categoriaSeleccionada = e.target.value;
+        
+        // Resetear la lista de productos antes de hacer una nueva solicitud
+        setProductos([]); 
+        setCategoriaSeleccionada(categoriaSeleccionada);
+        setCargandoDestinos(true); // Mostrar el cargando mientras se obtienen los productos
+        
+        if (categoriaSeleccionada) {
+            const url = `http://localhost:3000/api/products/category/${categoriaSeleccionada}`;
+            
             try {
                 const resp = await fetch(url);
                 const data = await resp.json();
-
-                // Mapeo de productos filtrados por categoría
-                const productosFiltrados = data.map((product) => ({
-                    id: product._id,
-                    nombre: product.nombre,
-                    foto: product.imagen, // Cambié 'foto' a 'imagen'
-                    precio: product.precio,
-                    categoria: product.categoria,
-                }));
-
-                setProductos(productosFiltrados);
-                setCargandoDestinos(false);
+    
+                if (Array.isArray(data) && data.length > 0) {
+                    const productosFiltrados = data.map((product) => ({
+                        id: product._id,
+                        nombre: product.nombre,
+                        foto: product.imagen,
+                        precio: product.precio,
+                        categoria: product.categoria,
+                    }));
+    
+                    setProductos(productosFiltrados); // Actualizar los productos con los filtrados
+                } else {
+                    setProductos([]); // Si no se encontraron productos, asegurarse de que esté vacío
+                    setErrorMensaje('No se encontraron productos para esta categoría.');
+                }
             } catch (error) {
                 setErrorMensaje('Error al obtener productos por categoría.');
                 console.error('Error al obtener productos por categoría:', error);
-                setCargandoDestinos(false);
+            } finally {
+                setCargandoDestinos(false); // Detener el cargando al finalizar la solicitud
             }
         } else {
-            getProducts(); // Si no se selecciona ninguna categoría, recargar todos los productos
+            // Si no se selecciona categoría, cargar todos los productos o mostrar los predeterminados
+            getProducts();
             setCargandoDestinos(false);
         }
     };
+    
+    
 
     return (
         <div>
@@ -102,80 +115,44 @@ const Home = () => {
     <div>
     <label htmlFor="categoria">Filtrar por Categoría:</label>
     <select name="categoria" id="categoria" value={categoriaSeleccionada} onChange={handleCategoriaChange}>
-        <option value="">Selecciona una categoría</option>
-        {['collares', 'anillos', 'aros'].map((categoria, index) => (
-            <option key={index} value={categoria}>
-                {categoria.charAt(0).toUpperCase() + categoria.slice(1)}
-            </option>
-        ))}
-    </select>
+    <option value="" disabled>Seleccionar</option> {/* Opción predeterminada que no aparece en el listado */}
+    {['collares', 'anillos', 'aros'].map((categoria, index) => (
+        <option key={index} value={categoria}>
+            {categoria.charAt(0).toUpperCase() + categoria.slice(1)}
+        </option>
+    ))}
+</select>
+
     </div>
 
 
-            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '20px' }}>
-                {/* Renderizado de productos */}
-                {errorMensaje ? (
-                    <p className="error-message">{errorMensaje}</p>
-                ) : cargandoDestinos ? (
-                    <p className="loading-indicator">Cargando...</p>
-                ) : (
-                    <>
-                        {(categoriaSeleccionada === '' || categoriaSeleccionada === 'collares') && productos.length > 0 && (
-                            <section className="section">
-                                <h3 className="section-title">Collares</h3>
-                                <div className="cont_card">
-                                    {productos.filter(p => p.categoria === 'collares').map((producto) => (
-                                        <Card
-                                            key={producto.id}
-                                            id={producto.id}
-                                            texto={producto.nombre}
-                                            precio={producto.precio}
-                                            foto={producto.foto}
-                                            usuarioLogueado={usuarioLogueado} // Paso el estado de autenticación a las tarjetas de producto
-                                        />
-                                    ))}
-                                </div>
-                            </section>
-                        )}
+    <div style={{ display: 'flex', flexWrap: 'wrap', gap: '20px' }}>
+    {/* Renderizado de productos */}
+    {errorMensaje ? (
+        <p className="error-message">{errorMensaje}</p>
+    ) : cargandoDestinos ? (
+        <p className="loading-indicator">Cargando...</p>
+    ) : (
+        <>
+            {/* Filtra los productos según la categoría seleccionada o muestra todos */}
+            {(categoriaSeleccionada === '' ? productos : productos.filter(p => p.categoria === categoriaSeleccionada)).length > 0 ? (
+                productos.filter(p => categoriaSeleccionada === '' || p.categoria === categoriaSeleccionada).map((producto) => (
+                    <Card
+                        key={producto.id}
+                        id={producto.id}
+                        texto={producto.nombre}
+                        precio={producto.precio}
+                        foto={producto.foto}
+                        usuarioLogueado={usuarioLogueado} // Paso el estado de autenticación a las tarjetas de producto
+                    />
+                ))
+            ) : (
+                <p>No se encontraron productos para esta categoría.</p>
+            )}
+        </>
+    )}
+</div>
 
-                        {(categoriaSeleccionada === '' || categoriaSeleccionada === 'anillos') && productos.length > 0 && (
-                            <section className="section">
-                                <h3 className="section-title">Anillos</h3>
-                                <div className="cont_card">
-                                    {productos.filter(p => p.categoria === 'anillos').map((producto) => (
-                                        <Card
-                                            key={producto.id}
-                                            id={producto.id}
-                                            texto={producto.nombre}
-                                            precio={producto.precio}
-                                            foto={producto.foto}
-                                            usuarioLogueado={usuarioLogueado} // Paso el estado de autenticación a las tarjetas de producto
-                                        />
-                                    ))}
-                                </div>
-                            </section>
-                        )}
-
-                        {(categoriaSeleccionada === '' || categoriaSeleccionada === 'aros') && productos.length > 0 && (
-                            <section className="section">
-                                <h3 className="section-title">Aros</h3>
-                                <div className="cont_card">
-                                    {productos.filter(p => p.categoria === 'aros').map((producto) => (
-                                        <Card
-                                            key={producto.id}
-                                            id={producto.id}
-                                            texto={producto.nombre}
-                                            precio={producto.precio}
-                                            foto={producto.foto}
-                                            usuarioLogueado={usuarioLogueado} // Paso el estado de autenticación a las tarjetas de producto
-                                        />
-                                    ))}
-                                </div>
-                            </section>
-                        )}
-                    </>
-                )}
-            </div>
         </div>
     );
 };

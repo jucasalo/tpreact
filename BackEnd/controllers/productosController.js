@@ -7,7 +7,7 @@ const crearProducto = async (req, res) => {
         const { nombre, descripcion, precio, stock, imagen, categoria } = req.body;
 
         // Validar que todos los campos necesarios estén presentes
-        if (!nombre || !descripcion || !precio || !stock || !imagen || !categoria) {
+        if (!nombre || !descripcion || !precio || !stock || !categoria) {
             return res.status(400).json({ message: 'Todos los campos son obligatorios' });
         }
 
@@ -55,9 +55,23 @@ const obtenerProductosPorCategoria = async (req, res) => {
     }
 };
 
-module.exports = {
-    obtenerProductosPorCategoria
+const obtenerCategorias = async (req, res) => {
+    try {
+        // Usamos el método `distinct` para obtener todas las categorías únicas
+        const categorias = await Producto.distinct('categoria'); 
+
+        if (categorias.length === 0) {
+            return res.status(404).json({ message: 'No se encontraron categorías.' });
+        }
+
+        res.status(200).json(categorias); // Enviar las categorías al frontend
+    } catch (error) {
+        // Loguear el error para depuración adicional si es necesario
+        console.error("Error al obtener las categorías:", error.message);
+        res.status(500).json({ message: "Ocurrió un error al intentar recuperar las categorías. Por favor, intenta más tarde." });
+    }
 };
+
 
 // Obtener un producto por ID
 const obtenerProductoPorId = async (req, res) => {
@@ -134,5 +148,6 @@ module.exports = {
     obtenerProductoPorId, 
     eliminarProductoPorId, 
     actualizarProductoPorId,
-    obtenerProductosPorCategoria 
+    obtenerProductosPorCategoria,
+    obtenerCategorias
 };

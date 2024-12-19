@@ -4,7 +4,7 @@ import { AuthContext } from "../utils/AuthContext";
 
 const Login = () => {
     const [formData, setFormData] = useState({ email: '', password: '' });
-    const { login } = useContext(AuthContext); // Si aún utilizas contexto para el estado de autenticación
+    const { login } = useContext(AuthContext); // Contexto para la autenticación
     const navigate = useNavigate();
 
     const handleChange = (event) => {
@@ -37,9 +37,11 @@ const Login = () => {
             const data = await response.json();
             console.log('Respuesta del servidor:', data);
 
-            // Si las credenciales son correctas, actualizamos el contexto (sin token)
-            if (data.message === 'Login exitoso') {
-                login('ok'); // No almacenamos token, solo cambiamos estado de autenticación
+            // Guardar el token en localStorage
+            if (data.token) {
+                console.log(localStorage.getItem("token"));
+                alert("Inicio de sesión exitoso");
+                login(data.usuario, data.token); // Actualizar estado de autenticación en el contexto
                 navigate('/'); // Redirigir al inicio
             } else {
                 alert('Usuario o contraseña inválidos');
@@ -57,10 +59,22 @@ const Login = () => {
             <h2>Login</h2>
             <form onSubmit={handleSubmit} className="card p-4">
                 <label htmlFor="email">Email</label>
-                <input type="email" name="email" onChange={handleChange} value={formData.email} />
+                <input 
+                    type="email" 
+                    name="email" 
+                    onChange={handleChange} 
+                    value={formData.email} 
+                    required 
+                />
 
                 <label htmlFor="password">Contraseña</label>
-                <input type="password" name="password" onChange={handleChange} value={formData.password} />
+                <input 
+                    type="password" 
+                    name="password" 
+                    onChange={handleChange} 
+                    value={formData.password} 
+                    required 
+                />
 
                 <button type="submit" className="m-2">Iniciar sesión</button>
             </form>

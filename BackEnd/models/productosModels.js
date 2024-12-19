@@ -9,8 +9,8 @@ const ProductoSchema = new mongoose.Schema({
     categoria: { 
         type: String, 
         required: true, 
-        enum: ['collares', 'anillos', 'aros'], // Categorías predefinidas
-        message: '{VALUE} no es una categoría válida' // Mensaje de error 
+        enum: ['collares', 'anillos', 'aros'], 
+        message: '{VALUE} no es una categoría válida' 
     }
 });
 module.exports = mongoose.model('Producto', ProductoSchema);

@@ -35,12 +35,12 @@ const Perfil = () => {
 
         try {
             const response = await axios.put(
-                `http://localhost:3000/api/users/actualizar/${user._id}`,  // Usamos el _id del usuario
+                `http://localhost:3000/api/users/putactualizar/${user._id}`,  // Usamos el _id del usuario
                 { nombre: userData.nombre }
             );
 
             // Actualizar los datos del usuario en el contexto
-            setUser({ ...user, nombre: userData.nombre });
+            setUser({ ...user, nombre: response.data.nombre });
 
             alert('Datos actualizados con éxito');
         } catch (error) {
@@ -51,28 +51,26 @@ const Perfil = () => {
         }
     };
 
- 
     return (
         <div>
             <h2>Mi Perfil</h2>
             {error && <div className="error">{error}</div>} {/* Mostrar mensaje de error si existe */}
             <form onSubmit={handleSubmit}>
-    <div>
-        <label htmlFor="nombre">Nombre:</label>
-        <input
-            type="text"
-            id="nombre"
-            name="nombre"
-            value={userData.nombre}
-            onChange={handleInputChange}
-            required
-        />
-    </div>
-    <button type="submit" disabled={loading}>
-        {loading ? 'Actualizando...' : 'Actualizar'}
-    </button>
-</form>
-
+                <div>
+                    <label htmlFor="nombre">Nombre:</label>
+                    <input
+                        type="text"
+                        id="nombre"
+                        name="nombre"
+                        value={userData.nombre}
+                        onChange={handleInputChange}
+                        required
+                    />
+                </div>
+                <button type="submit" disabled={loading}>
+                    {loading ? 'Actualizando...' : 'Actualizar'}
+                </button>
+            </form>
         </div>
     );
 };
