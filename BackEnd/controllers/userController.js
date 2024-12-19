@@ -1,7 +1,7 @@
 const User = require('../models/usersModels.js');
 const jwt = require('jsonwebtoken');
-
-const SECRET_KEY = process.env.SECRET_KEY || "your_secure_secret_key"; // Clave secreta desde un archivo de configuración o variable de entorno segura
+require('dotenv').config();
+const SECRETKEY = process.env.SECRETKEY 
 
 // Crear un nuevo usuario
 const createUser = async (req, res) => {
@@ -47,7 +47,7 @@ const login = async (req, res) => {
 
         const token = jwt.sign(
             { id: user._id, email: user.email, rol: user.rol },
-            SECRET_KEY,
+            SECRETKEY,
             { expiresIn: '2h' }
         );
 

@@ -20,12 +20,12 @@ const validarToken = ( req, res, next  ) => {
     // Lógica de la verificación del jwt
     jwt.verify(token, secretKey, ( error, decoded  ) => {
         if( error) {
-            return res.status(403).json({ msg: 'Token Invaido '})
+           console.log(error)
         }
 
         console.log({decoded})
         // Si se pudo decodificar el token, retorno
-        req.body.userId = decoded.userId;
+        req.body.userId = decoded.id;
         next();
     })
 
