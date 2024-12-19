@@ -1,6 +1,6 @@
 /* Variables de colores en rosa */
 :root {
-  font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
+  font-family: 'Inter', system-ui, Avenir, Helvetica, Arial, sans-serif;
   line-height: 1.5;
   font-weight: 400;
 
@@ -17,16 +17,17 @@
   --primary-pink: #ff69b4; /* Rosa principal */
   --hover-pink: #d14f8f;   /* Rosa oscuro para hover */
   --light-pink: #ffc1e3;   /* Rosa claro */
-  --bg-pink: #ffe4f3;      /* Fondo rosa suave */
+  --bg-pink: #ffffff;      /* Fondo blanco */
   --text-dark: #4a154b;    /* Texto oscuro */
   --text-light: #ffffff;   /* Texto claro */
+  --nav-shadow: rgba(0, 0, 0, 0.1); /* Sombra para navegación */
 }
 
 /* Enlaces */
 a {
   font-weight: 500;
   color: var(--primary-pink);
-  text-decoration: inherit;
+  text-decoration: none;
   transition: color 0.25s ease;
 }
 
@@ -43,6 +44,7 @@ body {
   min-height: 100vh;
   background-color: var(--bg-pink);
   color: var(--text-dark);
+  font-family: 'Inter', system-ui, Avenir, Helvetica, Arial, sans-serif;
 }
 
 /* Titulares */
@@ -118,4 +120,35 @@ button:focus-visible {
     background-color: var(--primary-pink);
     color: var(--text-light);
   }
+}
+
+/* Navegación */
+nav {
+  background-color: var(--bg-pink);
+  box-shadow: 0 4px 8px var(--nav-shadow);
+  padding: 1rem;
+  text-align: center;
+}
+
+nav ul {
+  list-style: none;
+  padding: 0;
+  display: flex;
+  justify-content: center;
+  gap: 2rem;
+}
+
+nav ul li {
+  margin: 0;
+}
+
+nav ul li a {
+  color: var(--text-dark);
+  font-weight: bold;
+  transition: color 0.3s ease, text-shadow 0.3s ease;
+}
+
+nav ul li a:hover {
+  color: var(--primary-pink);
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
 }

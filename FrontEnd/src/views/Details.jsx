@@ -5,17 +5,16 @@ import { AuthContext } from "../utils/AuthContext";
 const Details = () => {
   const { id } = useParams();
   const [product, setProduct] = useState(null);
-  const [userRole, setUserRole] = useState(null); // Estado para almacenar el rol del usuario
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null); // Estado para almacenar los errores
 
-  const { token } = useContext(AuthContext); // Obtener el token desde el contexto
+  const { user, token } = useContext(AuthContext); // Obtener el token desde el contexto
 
   useEffect(() => {
     if (token) {
       // Decodificar el token para obtener el rol del usuario
       const payload = JSON.parse(atob(token.split(".")[1])); // Decodificar la parte del payload del token
-      setUserRole(payload.rol); // Establecer el rol del usuario
+    
     }
 
     // Función para obtener los detalles del producto
@@ -112,7 +111,7 @@ const Details = () => {
         <div className="details-description">
           <p>{product.descripcion}</p> {/* Descripción real del producto */}
           {/* Condición para mostrar los botones solo a usuarios logueados */}
-          {userRole && (
+          {user && (
             <div className="details-actions">
               <button className="edit-button" onClick={editProduct} disabled={loading}>Editar</button>
               <button className="delete-button" onClick={deleteProduct} disabled={loading}>Eliminar</button>

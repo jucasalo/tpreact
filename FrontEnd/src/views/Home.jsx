@@ -3,7 +3,7 @@ import Card from '../components/Card';
 import { AuthContext } from '../utils/AuthContext';
 
 const Home = () => {
-    const { usuarioLogueado } = React.useContext(AuthContext); // Obtén el estado de autenticación del contexto
+    const { user } = React.useContext(AuthContext); // Obtén el estado de autenticación del contexto
     const [productos, setProductos] = useState([]); // Estado para almacenar los productos
     const [categorias, setCategorias] = useState([]); // Estado para almacenar las categorías
     const [errorMensaje, setErrorMensaje] = useState(''); // Estado para manejar errores
@@ -143,7 +143,7 @@ const Home = () => {
                         texto={producto.nombre}
                         precio={producto.precio}
                         foto={producto.foto}
-                        usuarioLogueado={usuarioLogueado} // Paso el estado de autenticación a las tarjetas de producto
+                        usuarioLogueado={ user } // Paso el estado de autenticación a las tarjetas de producto
                     />
                 ))
             ) : (

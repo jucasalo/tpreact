@@ -18,7 +18,7 @@ import { AuthProvider } from './utils/AuthContext';
 function App() {
   return (
     <div>
-      <h1> Recuperatorio Tp2</h1>
+      <h1> Final Aplicaciones Híbridas </h1>
       <hr />
       <nav>
         <ul>

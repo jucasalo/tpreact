@@ -3,7 +3,7 @@ import { AuthContext } from '../utils/AuthContext';
 import axios from 'axios';
 
 const Perfil = () => {
-    const { user, setUser } = useContext(AuthContext); // Solo usamos 'user'
+    const { user, token, setUser } = useContext(AuthContext); // Usamos 'user' y 'token'
     const [userData, setUserData] = useState({
         nombre: '',
     });
@@ -26,25 +26,29 @@ const Perfil = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         setLoading(true);
-
+    
         if (!user || !user._id) {
             alert('No estás autenticado. Por favor, inicia sesión.');
             setLoading(false);
             return;
         }
-
+    
         try {
             const response = await axios.put(
-                `http://localhost:3000/api/users/putactualizar/${user._id}`,  // Usamos el _id del usuario
-                { nombre: userData.nombre }
+                `http://localhost:3000/api/users/putactualizar/${user._id}`,
+                { nombre: userData.nombre },
+                {
+                    headers: {
+                        'Authorization': `Bearer ${token}`, // Envía el token aquí
+                        'Content-Type': 'application/json',
+                    },
+                }
             );
-
-            // Actualizar los datos del usuario en el contexto
+    
             setUser({ ...user, nombre: response.data.nombre });
-
             alert('Datos actualizados con éxito');
         } catch (error) {
-            setError('Error al actualizar los datos'); // Actualizar el estado de error
+            setError('Error al actualizar los datos');
             console.error(error);
         } finally {
             setLoading(false);

@@ -31,12 +31,8 @@ function Card(props) {
             <h4>{props.texto}</h4>
             <hr />
             <img src={props.foto} alt={props.nombre} />
-            <p>$ {props.precio + 10}</p>
-            <Button text="Agregar" color="green"></Button>
+            <p>$ {props.precio}</p>
             <Link to={`/details/${props.id}`}>Detalle</Link>
-            {props.usuarioLogueado && (
-                <button onClick={() => eliminarProducto(props.id)}>Eliminar</button>
-            )}
         </div>
     );
 }
