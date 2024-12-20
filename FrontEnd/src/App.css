@@ -1,4 +1,4 @@
-Paleta de colores
+/* Paleta de colores */
 :root {
   --primary-pink: #ff69b4; /* Rosa principal */
   --light-pink: #ffc1e3;   /* Rosa claro */
@@ -23,6 +23,7 @@ body {
   margin: 0 auto;
   padding: 2rem;
   text-align: center;
+  margin-top: 2rem; /* Ajuste para mayor espacio entre el título y las tarjetas */
 }
 
 /* Logo Styling */
@@ -56,13 +57,15 @@ body {
 .card {
   border: 2px solid var(--light-pink);
   padding: 20px;
-  width: 200px;
+  width: 250px; /* Ajuste de tamaño de tarjeta para mayor compatibilidad */
   min-height: 300px;
   box-shadow: 0 4px 10px var(--shadow-pink);
   border-radius: 10px;
   background-color: var(--primary-pink);
   transition: transform 0.3s ease, box-shadow 0.3s ease;
   color: var(--text-light);
+  display: inline-block; /* Ajuste para que las tarjetas se muestren en línea */
+  vertical-align: top; /* Para alinear verticalmente dentro de una fila */
 }
 
 .card:hover {

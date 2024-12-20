@@ -3,7 +3,7 @@ import { AuthContext } from '../utils/AuthContext';
 import axios from 'axios';
 
 const Perfil = () => {
-    const { user, token, setUser } = useContext(AuthContext); // Usamos 'user' y 'token'
+    const { user, token, setUser } = useContext(AuthContext); // Usamos 'user', 'token' y 'setUser'
     const [userData, setUserData] = useState({
         nombre: '',
     });
@@ -45,6 +45,7 @@ const Perfil = () => {
                 }
             );
     
+            // Actualizar el contexto con los datos nuevos del usuario
             setUser({ ...user, nombre: response.data.nombre });
             alert('Datos actualizados con éxito');
         } catch (error) {

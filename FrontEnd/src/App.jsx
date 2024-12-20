@@ -18,7 +18,7 @@ import { AuthProvider } from './utils/AuthContext';
 function App() {
   return (
     <div>
-      <h1> Final Aplicaciones Híbridas </h1>
+      <h1> Final Aplicaciones Híbridas</h1>
       <hr />
       <nav>
         <ul>
@@ -45,11 +45,12 @@ function App() {
       <AuthProvider>
         <Routes>
           <Route path='/' element={<Home />} />
-          <Route path='/perfil' element={
+          {/* <Route path='/perfil' element={
             <PrivateRoute>
               <Perfil /> 
             </PrivateRoute>
-          } />
+          } /> */}
+           <Route path='/perfil' element={<Perfil />} />
           <Route path='/contact' element={<Contact />} />
           <Route path='/details/:id' element={<Details />} />
           <Route path='/registro' element={<Registro />} />
